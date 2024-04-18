@@ -38,4 +38,8 @@ public class Comment {
     Post post;
     @OneToMany(mappedBy = "comment",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     List<Like>likes;
-}
+
+
+
+    }
+

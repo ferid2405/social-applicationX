@@ -8,6 +8,7 @@ import com.social.socialapplication.exception.PostNotFound;
 import com.social.socialapplication.exception.UserNotFound;
 import com.social.socialapplication.repository.PostRepository;
 import com.social.socialapplication.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class PostService {
         List<Post> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "createDate"));
         return posts.stream().map(PostResponse::convertPostToPostResponse).collect(Collectors.toList());
     }
+    @Transactional
 
     public List<PostResponse> getAllPostByUsername(String username) {
         User user = userRepository.findByUsername(username).
@@ -34,7 +36,7 @@ public class PostService {
         List<Post>posts=postRepository.findPostByUser(user);
         return posts.stream().map(PostResponse::convertPostToPostResponse).collect(Collectors.toList());
     }
-
+    @Transactional
 
     public PostResponse createPostByUsername(String username, PostRequest postRequest) {
         User user = userRepository.findByUsername(username).
@@ -43,7 +45,7 @@ public class PostService {
         post.setUser(user);
         Post postSaved=postRepository.save(post);
         return PostResponse.convertPostToPostResponse(postSaved);
-    }
+    }@Transactional
     public Boolean deletePostByPostId(Long postId) {
         try {
             Post foundPost = postRepository.findById(postId).
@@ -54,6 +56,7 @@ public class PostService {
             return false;
         }
     }
+    @Transactional
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Post foundPost = postRepository.findById(postId).
                 orElseThrow(()->new PostNotFound("Belə bir post tapılmadı"));
